@@ -540,6 +540,24 @@
           <div class="cert-text">Instituto Tecnológico de Alvarado · 2014</div>
         </div>
       </div>
+
+      <!-- QR centrado en educación -->
+      <div style="margin-top: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <div style="position: relative;">
+          <div id="qr-edu-canvas" style="width:140px;height:140px;border-radius:14px;overflow:hidden;background:#fff;position:relative;"></div>
+          <!-- corner accents -->
+          <div style="position:absolute;top:-2px;left:-2px;width:16px;height:16px;border-top:2px solid #6d6aff;border-left:2px solid #6d6aff;border-radius:4px 0 0 0;pointer-events:none;"></div>
+          <div style="position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-top:2px solid #6d6aff;border-right:2px solid #6d6aff;border-radius:0 4px 0 0;pointer-events:none;"></div>
+          <div style="position:absolute;bottom:-2px;left:-2px;width:16px;height:16px;border-bottom:2px solid #6d6aff;border-left:2px solid #6d6aff;border-radius:0 0 0 4px;pointer-events:none;"></div>
+          <div style="position:absolute;bottom:-2px;right:-2px;width:16px;height:16px;border-bottom:2px solid #6d6aff;border-right:2px solid #6d6aff;border-radius:0 0 4px 0;pointer-events:none;"></div>
+          <div id="qr-scan-line" style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(109,106,255,0.9),transparent);z-index:3;pointer-events:none;"></div>
+        </div>
+        <div style="text-align:center;">
+          <p style="font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 3px;">CV Digital</p>
+          <p style="font-size:0.65rem;color:#4a5a6e;margin:0;">Escanea para ver la versión web</p>
+        </div>
+      </div>
+
     </div>
     <div>
       <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem;">Certificaciones</h3>
@@ -659,109 +677,49 @@
 
 <!-- ─── QR FLOTANTE ─── -->
 <style>
-  .qr-float {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    z-index: 200;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-  }
-  .qr-float:hover { transform: translateY(-4px) scale(1.03); }
-  .qr-box {
-    background: #0f1523;
-    border: 1px solid rgba(109,106,255,0.4);
-    border-radius: 16px;
-    padding: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(109,106,255,0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    backdrop-filter: blur(20px);
-  }
-  .qr-box canvas {
-    border-radius: 8px;
-    display: block;
-  }
-  .qr-label {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.68rem;
-    font-weight: 600;
-    color: #a78bfa;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-align: center;
-  }
-  .qr-sublabel {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.62rem;
-    color: #4a5a6e;
-    text-align: center;
-    line-height: 1.3;
-  }
-  .qr-pulse-ring {
-    position: absolute;
-    top: -4px; right: -4px;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: #34d399;
-    animation: qrPulse 2.5s infinite;
-  }
-  @keyframes qrPulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.5); }
-    50% { box-shadow: 0 0 0 8px rgba(52,211,153,0); }
-  }
-  @media print { .qr-float { display: none !important; } }
+
 </style>
 
-<div class="qr-float" title="Escanea para ver el CV">
-  <div class="qr-box" style="position:relative;">
-    <div class="qr-pulse-ring"></div>
-    <canvas id="qr-canvas" width="130" height="130"></canvas>
-    <div class="qr-label">📄 Mi CV Digital</div>
-    <div class="qr-sublabel">Escanea con tu cámara</div>
-  </div>
-</div>
 
+
+
+
+
+
+
+
+<style>
+  @keyframes scanLine {
+    0%   { top: 0; opacity: 0.7; }
+    50%  { opacity: 1; }
+    100% { top: 138px; opacity: 0.7; }
+  }
+  #qr-scan-line { animation: scanLine 2.2s ease-in-out infinite; }
+  @media print {
+    #qr-edu-canvas, #qr-scan-line { display: block !important; }
+    #qr-scan-line { display: none !important; }
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-// ─── QR Generator (puro JS, sin dependencias externas) ───
 (function(){
-  const url = "https://www.linkedin.com/in/gerardo-malag%C3%B3n-tapia-20564721a";
-
-  // Minimal QR encoder using a lightweight approach
-  // We'll use the qrcodejs approach via inline implementation
-  // Loading qrcode.js from cdnjs
-  const script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-  script.onload = function() {
-    // Clear canvas approach, use div instead
-    const canvas = document.getElementById('qr-canvas');
-    canvas.style.display = 'none';
-    const div = document.createElement('div');
-    div.id = 'qr-div';
-    div.style.cssText = 'width:130px;height:130px;border-radius:8px;overflow:hidden;background:#fff;';
-    canvas.parentNode.insertBefore(div, canvas);
-
-    new QRCode(div, {
-      text: url,
-      width: 130,
-      height: 130,
-      colorDark: "#0a0e1a",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.M
-    });
-
-    // Make the whole QR clickable
-    document.querySelector('.qr-float').addEventListener('click', function() {
-      window.open(url, '_blank');
-    });
-  };
-  document.head.appendChild(script);
+  const url = "https://gerardomalagon1992-beep.github.io/cv-gerardo-malagon/";
+  function initQR() {
+    const el = document.getElementById('qr-edu-canvas');
+    if (typeof QRCode !== 'undefined' && el) {
+      new QRCode(el, {
+        text: url,
+        width: 140,
+        height: 140,
+        colorDark: "#0a0e1a",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } else {
+      setTimeout(initQR, 200);
+    }
+  }
+  initQR();
 })();
 </script>
 
